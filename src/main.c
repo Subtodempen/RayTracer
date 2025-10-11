@@ -94,7 +94,7 @@ vec3 subtract(vec3 a, vec3 b){
 }
 
 vec3 divide(vec3 a, int n){
-    scalerMultiply(a, 1/n);
+    return scalerMultiply(a, 1/n);
 }
 
 int magnitude(vec3 a){
