@@ -6,9 +6,12 @@ ffi = FFI()
 headerPath = '../include/'
 srcPath = '../src/'
 
+headerFiles = ["ray.h", "ppm.h", "structs.h"]
+
 cdefStr = ""
-with open(headerPath + "ray.h") as hFile:
-    cdefStr = hFile.read()
+for header in headerFiles:
+    with open(headerPath + header) as hFile:
+        cdefStr += hFile.read() + '\n'
 
 ffi.cdef(cdefStr)
 
