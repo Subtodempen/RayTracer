@@ -1,10 +1,10 @@
-#include <math.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include <errno.h>
 #include <string.h>
+#include <math.h>
 
 #define XSIZE 800
 #define YSIZE 800
@@ -17,7 +17,7 @@ typedef struct {
 }RGB;
 
 typedef struct{
-    int x, y, z;
+    double x, y, z;
 }vec3;
 
 
@@ -27,6 +27,7 @@ typedef struct{
 }ray;
 
 vec3 calcRayPos(ray r, int t);
+RGB calcRayColor(ray r);
 
 // vector functionailty
 static inline vec3 add(vec3 a, vec3 b);
@@ -40,9 +41,11 @@ static inline int dotProduct(vec3 a, vec3 b);
 //int readPPM(FILE* f);
 void writePPMPixels(FILE* f, RGB* pixels, const int size);
 void initPPMHeader(FILE* f, int n, int m);
-
 int openPPMFile(FILE** f, const char* fname);
 
+RGB** initBuffer(int xSize, int ySize);
+void writeColorToBuffer(RGB color, RGB** buffer, int xBufferIndex, int yBufferIndex);
+void writeBufferToPPM(RGB **buffer, FILE* f, int xSize, int ySize);
 
 int openPPMFile(FILE** f, const char* fname){
     *f = fopen(fname, "w");
@@ -66,6 +69,29 @@ void initPPMHeader(FILE* f, int n, int m){
 void writePPMPixels(FILE* f, RGB* pixels, const int size){
     fwrite(pixels, size / sizeof(RGB), size, f);
 }
+
+
+
+RGB** initBuffer(int xSize, int ySize){
+    RGB** buffer;
+
+    buffer[0] = (RGB*)malloc(xSize * ySize * sizeof(RGB*));
+    
+    for(int i=1; i < ySize; i++)
+        buffer[i] = buffer[0] + (i * xSize);
+    
+    return buffer;
+}
+
+void writeColorToBuffer(RGB color, RGB** buffer, int xBufferIndex, int yBufferIndex){
+    buffer[xBufferIndex][yBufferIndex] = color;
+}
+
+void writeBufferToPPM(RGB **buffer, FILE* f, int xSize, int ySize){
+    for(int i=0; i < ySize; i++)
+        writePPMPixels(f, buffer[i], xSize);
+}
+
 
 // vec3 functionailty dit product adding etc etc
 vec3 add(vec3 a, vec3 b){
@@ -113,6 +139,11 @@ vec3 calcRayPos(ray r, int t){
     return add(scalerMultiply(r.direction, t), r.origin);
 }
 
+RGB calcRayColor(ray r){
+    RGB a = {0, 0, 0};
+    return a;
+}
+
 int main(){
     double aspectRatio = 16.0 / 9.0;
     
@@ -129,50 +160,30 @@ int main(){
 
     vec3 cameraOrigin = {0, 0, 0};
 
+    RGB** buffer = initBuffer(imageWidth, imageHeight);
+    int bufferIndex = 0;
+
     for(int i=0; i < imageWidth; i++){
         for(int j=0; j < imageHeight; j++){
             vec3 pixelCentre = {i * deltaU, j * deltaV, focalPoint};
             vec3 rayDirection = calcUnitVector(pixelCentre);
 
             ray r = {cameraOrigin, rayDirection};
-
+            RGB color = calcRayColor(r);
+        
+            writeColorToBuffer(color, buffer, i, j);
         }
     }
-}
-    /*
-    const int size = XSIZE * YSIZE;
-    
-    struct RGB* pixels[YSIZE];
-    pixels[0] = (struct RGB*)malloc(XSIZE * YSIZE * sizeof(struct RGB));
 
-    for(int i=1; i < YSIZE; i++){
-        pixels[i] = pixels[0] + (i * XSIZE);
-    }
-
-    for(int i=0; i < YSIZE; i++){
-        for(int j=0; j < XSIZE; j++){
-            int r = rand() % RGBMAX;
-            int b = rand() % RGBMAX;
-            int g = rand() % RGBMAX;
-
-            struct RGB pixel ={r, b, g };
-            pixels[i][j] = pixel;            
-        }
-    }
-    
-    FILE* f = NULL;
+    FILE* f = NULL; 
     int result = openPPMFile(&f, "test.ppm");
-    
-    if(result == -1)
-        return result; 
-    
-    initPPMHeader(f, XSIZE, YSIZE);
-    
-    for(int i=0; i < YSIZE; i++)
-        writePPMPixels(f, pixels[i], XSIZE);
 
-    free(pixels[0]);
+    if (result == -1)
+        return -1;
+    
+    initPPMHeader(f, imageWidth, imageHeight);
+    writeBufferToPPM(buffer, f, imageWidth, imageHeight);
+
+    free(buffer);
     fclose(f);
 }
-
-*/
