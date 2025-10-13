@@ -6,9 +6,7 @@
 #include <string.h>
 #include <math.h>
 
-#define XSIZE 800
-#define YSIZE 800
-
+#define XSIZE 8
 #define RGBMAX 255
 
 
@@ -44,7 +42,6 @@ void initPPMHeader(FILE* f, int n, int m);
 int openPPMFile(FILE** f, const char* fname);
 
 RGB** initBuffer(int xSize, int ySize);
-void writeColorToBuffer(RGB color, RGB** buffer, int xBufferIndex, int yBufferIndex);
 void writeBufferToPPM(RGB **buffer, FILE* f, int xSize, int ySize);
 
 int openPPMFile(FILE** f, const char* fname){
@@ -73,9 +70,8 @@ void writePPMPixels(FILE* f, RGB* pixels, const int size){
 
 
 RGB** initBuffer(int xSize, int ySize){
-    RGB** buffer;
-
-    buffer[0] = (RGB*)malloc(xSize * ySize * sizeof(RGB*));
+    RGB** buffer = malloc(ySize * sizeof(RGB *));
+    buffer[0] = (RGB*)malloc(xSize * ySize * sizeof(RGB));
     
     for(int i=1; i < ySize; i++)
         buffer[i] = buffer[0] + (i * xSize);
@@ -83,9 +79,6 @@ RGB** initBuffer(int xSize, int ySize){
     return buffer;
 }
 
-void writeColorToBuffer(RGB color, RGB** buffer, int xBufferIndex, int yBufferIndex){
-    buffer[xBufferIndex][yBufferIndex] = color;
-}
 
 void writeBufferToPPM(RGB **buffer, FILE* f, int xSize, int ySize){
     for(int i=0; i < ySize; i++)
@@ -161,8 +154,6 @@ int main(){
     vec3 cameraOrigin = {0, 0, 0};
 
     RGB** buffer = initBuffer(imageWidth, imageHeight);
-    int bufferIndex = 0;
-
     for(int i=0; i < imageWidth; i++){
         for(int j=0; j < imageHeight; j++){
             vec3 pixelCentre = {i * deltaU, j * deltaV, focalPoint};
@@ -171,7 +162,7 @@ int main(){
             ray r = {cameraOrigin, rayDirection};
             RGB color = calcRayColor(r);
         
-            writeColorToBuffer(color, buffer, i, j);
+            buffer[i][j] = color;
         }
     }
 
