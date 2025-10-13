@@ -6,7 +6,7 @@ ffi = FFI()
 headerPath = '../include/'
 srcPath = '../src/'
 
-headerFiles = ["ray.h", "ppm.h", "structs.h"]
+headerFiles = ["ray.h", "ppm.h", "color.h"]
 
 cdefStr = ""
 for header in headerFiles:

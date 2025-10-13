@@ -1,11 +1,25 @@
 #ifndef RAY
 #define RAY
-#include "directives.h"
-#include "structs.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <string.h>
+#include <math.h>
+
+#include "color.h"
 
 #define XSIZE 8
 #define RGBMAX 255
 
+typedef struct{
+    double x, y, z;
+}vec3;
+
+typedef struct{
+    vec3 origin;
+    vec3 direction; 
+}ray;
 
 vec3 calcRayPos(ray r, int t);
 RGB calcRayColor(ray r);

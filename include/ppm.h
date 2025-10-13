@@ -1,7 +1,13 @@
-#ifndef RAY
-#define RAY
-#include "directives.h"
-#include "structs.h"
+#ifndef PPM
+#define PPM
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <string.h>
+#include <math.h>
+
+#include "color.h"
 
 // read and write to the ppm file and functionbailty
 //int readPPM(FILE* f);

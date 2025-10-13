@@ -1,5 +1,4 @@
-#include "../include/directives.h"
-#include "../include/structs.h"
+#include "../include/color.h"
 #include "../include/ray.h"
 #include "../include/ppm.h"
 
