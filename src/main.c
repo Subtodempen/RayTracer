@@ -1,6 +1,8 @@
 #include "../include/color.h"
 #include "../include/ray.h"
 #include "../include/ppm.h"
+#include <math.h>
+#include <stdio.h>
 
 
 int openPPMFile(FILE** f, const char* fname){
@@ -16,17 +18,15 @@ int openPPMFile(FILE** f, const char* fname){
 
 void initPPMHeader(FILE* f, int n, int m){
     char* str = (char*)malloc(50);
-    sprintf(str, "P6 \n%d %d\n255 ", n , m);
+    sprintf(str, "P6 \n%d %d\n255 ", n, m);
     
     fwrite(str, strlen(str) * sizeof(char), strlen(str), f);
     free(str);
 }
 
 void writePPMPixels(FILE* f, RGB* pixels, const int size){
-    fwrite(pixels, size / sizeof(RGB), size, f);
+    fwrite(pixels, sizeof(RGB), size, f);
 }
-
-
 
 RGB** initBuffer(int xSize, int ySize){
     RGB** buffer = malloc(ySize * sizeof(RGB *));
@@ -56,7 +56,7 @@ vec3 add(vec3 a, vec3 b){
     return product;
 }
 
-vec3 scalerMultiply(vec3 a, int n){
+vec3 scalerMultiply(vec3 a, double n){
     vec3 product;
 
     product.x = a.x * n;
@@ -71,51 +71,72 @@ vec3 subtract(vec3 a, vec3 b){
     return add(a, b);
 }
 
-vec3 divide(vec3 a, int n){
+vec3 divideScaler(vec3 a, double n){
     return scalerMultiply(a, 1/n);
 }
 
-int magnitude(vec3 a){
+double magnitude(vec3 a){
     return sqrt((a.x * a.x) + (a.y * a.y) + (a.z * a.z));
 }
 
-int dotProduct(vec3 a, vec3 b){
+double dotProduct(vec3 a, vec3 b){
     return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
 }
 
 vec3 calcUnitVector(vec3 a){
-    return divide(a, magnitude(a));
+    return divideScaler(a, magnitude(a));
 }
 
-vec3 calcRayPos(ray r, int t){
+vec3 calcRayPos(ray r, double t){
     return add(scalerMultiply(r.direction, t), r.origin);
 }
 
-RGB calcRayColor(ray r){
-    RGB a = {0, 0, 0};
-    return a;
+
+bool isIntersectingCircle(vec3 centre, double radius, const ray r){
+    vec3 OC = subtract(r.origin, centre);
+
+    double a = pow(magnitude(r.direction), 2);
+    double b = -2 * (dotProduct(r.direction, OC));
+    double c = dotProduct(OC, OC) - pow(radius, 2);
+
+    return ((b*b) - (4 * a * c)) >= 0;  
 }
+
+RGB calcRayColor(ray r){
+    RGB red = {255, 0, 0};
+    RGB blue = {0, 0, 245};
+
+    vec3 circle = {0.5,0.1, 1};
+    double radius = 0.2;
+    
+    if (isIntersectingCircle(circle, radius, r)) 
+        return red;
+    
+    return blue;
+}
+
 
 int main(){
     double aspectRatio = 16.0 / 9.0;
     
     int imageWidth = XSIZE;
-    int imageHeight = imageWidth / (int)aspectRatio;
+    int imageHeight = (int)(imageWidth / aspectRatio);
 
     double viewportWidth = 2.0;
     double viewportHeight = viewportWidth / aspectRatio;
 
-    double deltaU = imageWidth / viewportWidth;
-    double deltaV = imageHeight / viewportHeight;
+    double deltaU = viewportWidth / imageWidth;
+    double deltaV = viewportHeight / imageHeight;
 
     int focalPoint = 1;
 
     vec3 cameraOrigin = {0, 0, 0};
+    
 
     RGB** buffer = initBuffer(imageWidth, imageHeight);
-    for(int i=0; i < imageWidth; i++){
-        for(int j=0; j < imageHeight; j++){
-            vec3 pixelCentre = {i * deltaU, j * deltaV, focalPoint};
+    for(int i=0; i < imageHeight; i++){
+        for(int j=0; j < imageWidth; j++){
+            vec3 pixelCentre = {j * deltaU, i * deltaV, focalPoint};
             vec3 rayDirection = calcUnitVector(pixelCentre);
 
             ray r = {cameraOrigin, rayDirection};

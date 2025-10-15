@@ -6,5 +6,5 @@ C_DEFINES =
 
 C_INCLUDES = -I/home/demirel/RayTracer/include
 
-C_FLAGS = -O3 -DNDEBUG -std=gnu11 -Wall -Wextra -pedantic
+C_FLAGS = -O3 -DNDEBUG -std=gnu11 -Wall -Wextra -pedantic -O0 -g
 

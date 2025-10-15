@@ -9,6 +9,8 @@
 
 #include "color.h"
 
+#define XSIZE 800
+
 // read and write to the ppm file and functionbailty
 //int readPPM(FILE* f);
 void writePPMPixels(FILE* f, RGB* pixels, const int size);

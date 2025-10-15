@@ -6,11 +6,9 @@
 #include <errno.h>
 #include <string.h>
 #include <math.h>
+#include <stdbool.h>
 
 #include "color.h"
-
-#define XSIZE 8
-#define RGBMAX 255
 
 typedef struct{
     double x, y, z;
@@ -21,14 +19,16 @@ typedef struct{
     vec3 direction; 
 }ray;
 
-vec3 calcRayPos(ray r, int t);
+vec3 calcRayPos(ray r, double t);
 RGB calcRayColor(ray r);
+bool isIntersectingCircle(vec3 origin, double radius, const ray r);
 
 // vector functionailty
 static inline vec3 add(vec3 a, vec3 b);
-static inline vec3 scalerMultiply(vec3 a, int n);
+static inline vec3 scalerMultiply(vec3 a, double n);
+static inline vec3 divideScaler(vec3 a, double n);
 static inline vec3 subtract(vec3 a, vec3 b);
 
-inline int magnitude(vec3 a);
-static inline int dotProduct(vec3 a, vec3 b);
+static inline double magnitude(vec3 a);
+static inline double dotProduct(vec3 a, vec3 b);
 #endif

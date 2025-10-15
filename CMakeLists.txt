@@ -13,7 +13,7 @@ target_include_directories(RayTracer PRIVATE include)
 target_link_libraries(RayTracer PRIVATE m)
 
 # Add warnings
-target_compile_options(RayTracer PRIVATE -Wall -Wextra -pedantic)
+target_compile_options(RayTracer PRIVATE -Wall -Wextra -pedantic -O0 -g)
 
 # Set default build type
 if(NOT CMAKE_BUILD_TYPE)

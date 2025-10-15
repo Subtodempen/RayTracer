@@ -47,5 +47,6 @@ CMakeFiles/RayLib.dir/src/main.c.o: /home/demirel/RayTracer/src/main.c \
  /usr/include/bits/fp-fast.h /usr/include/bits/mathcalls-macros.h \
  /usr/include/bits/mathcalls-helper-functions.h \
  /usr/include/bits/mathcalls.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stdbool.h \
  /home/demirel/RayTracer/src/../include/color.h \
  /home/demirel/RayTracer/src/../include/ppm.h
