@@ -4,7 +4,7 @@
 CMakeFiles/RayLib.dir/src/main.c.o: /home/demirel/RayTracer/src/main.c \
   /home/demirel/RayTracer/include/color.h \
   /home/demirel/RayTracer/include/ppm.h \
-  /home/demirel/RayTracer/include/ray.h \
+  /home/demirel/RayTracer/include/vector.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/errno-base.h \
   /usr/include/asm-generic/errno.h \
@@ -201,8 +201,6 @@ libRayLib.so: /usr/lib/crti.o \
 
 /usr/include/bits/libm-simd-decl-stubs.h:
 
-/home/demirel/RayTracer/include/ray.h:
-
 /usr/include/bits/endianness.h:
 
 /usr/include/bits/byteswap.h:
@@ -210,6 +208,8 @@ libRayLib.so: /usr/lib/crti.o \
 /usr/include/string.h:
 
 /usr/include/bits/time64.h:
+
+/usr/include/bits/mathcalls.h:
 
 /usr/include/asm-generic/errno.h:
 
@@ -224,8 +224,6 @@ libRayLib.so: /usr/lib/crti.o \
 /usr/include/bits/stdint-least.h:
 
 /usr/include/bits/types/__sigset_t.h:
-
-/usr/include/bits/mathcalls.h:
 
 /usr/include/stdio.h:
 
@@ -282,6 +280,8 @@ CMakeFiles/RayLib.dir/src/main.c.o:
 /usr/include/bits/types/locale_t.h:
 
 /usr/include/bits/types/struct_FILE.h:
+
+/home/demirel/RayTracer/include/vector.h:
 
 /usr/include/bits/types/struct_timespec.h:
 

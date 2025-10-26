@@ -11,7 +11,7 @@ CMakeFiles/RayLib.dir/src/main.c.o: /home/demirel/RayTracer/src/main.c \
  /usr/include/bits/time64.h /usr/include/bits/wchar.h \
  /usr/include/bits/stdint-intn.h /usr/include/bits/stdint-uintn.h \
  /usr/include/bits/stdint-least.h \
- /home/demirel/RayTracer/src/../include/ray.h /usr/include/stdio.h \
+ /home/demirel/RayTracer/src/../include/vector.h /usr/include/stdio.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stddef.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stdarg.h \
  /usr/include/bits/types/__fpos_t.h /usr/include/bits/types/__mbstate_t.h \
