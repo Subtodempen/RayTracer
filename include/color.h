@@ -8,4 +8,7 @@
 typedef struct {
     uint8_t r, g, b;
 }RGB;
+
+RGB applyBrightness(RGB, double);
+
 #endif
