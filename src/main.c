@@ -1,6 +1,13 @@
 #include "../include/color.h"
 #include "../include/vector.h"
 #include "../include/ppm.h"
+#include <float.h>
+#include <math.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+#include <string.h>
 
 
 int openPPMFile(FILE** f, const char* fname){
@@ -16,9 +23,9 @@ int openPPMFile(FILE** f, const char* fname){
 
 void initPPMHeader(FILE* f, int n, int m){
     char* str = (char*)malloc(50);
-    sprintf(str, "P6 \n%d %d\n%d ", n, m, RGBMAX);
+    sprintf(str, "P6\n%d %d\n%d\n", n, m, RGBMAX);
     
-    fwrite(str, strlen(str) * sizeof(char), strlen(str), f);
+    fwrite(str, sizeof(char), strlen(str), f);
     free(str);
 }
 
@@ -30,7 +37,7 @@ RGB** initBuffer(int xSize, int ySize){
     RGB** buffer = malloc(ySize * sizeof(RGB *));
     buffer[0] = (RGB*)malloc(xSize * ySize * sizeof(RGB));
     
-    for(int i=1; i < ySize; i++)
+    for(int i=0; i < ySize; i++)
         buffer[i] = buffer[0] + (i * xSize);
     
     return buffer;
@@ -38,7 +45,7 @@ RGB** initBuffer(int xSize, int ySize){
 
 
 void writeBufferToPPM(RGB **buffer, FILE* f, int xSize, int ySize){
-    for(int i=0; i < ySize; i++)
+    for(int i = ySize - 1; i >= 0; i--)
         writePPMPixels(f, buffer[i], xSize);
 }
 
@@ -54,23 +61,19 @@ RGB applyBrightness(RGB color, double brightness){
 
 // vec3 functionailty dit product adding etc etc
 vec3 add(vec3 a, vec3 b){
-    vec3 product;
+    a.x = a.x + b.x;
+    a.y = a.y + b.y;
+    a.z = a.z + b.z;
 
-    product.x = a.x + b.x;
-    product.y = a.y + b.y;
-    product.z = a.z + b.z;
-
-    return product;
+    return a;
 }
 
 vec3 scalerMultiply(vec3 a, double n){
-    vec3 product;
+    a.x = a.x * n;
+    a.y = a.y * n;
+    a.z = a.z * n;
 
-    product.x = a.x * n;
-    product.y = a.y * n;
-    product.z = a.z * n;
-
-    return product;
+    return a;
 }
 
 vec3 subtract(vec3 a, vec3 b){
@@ -79,7 +82,7 @@ vec3 subtract(vec3 a, vec3 b){
 }
 
 vec3 divideScaler(vec3 a, double n){
-    return scalerMultiply(a, 1/n);
+    return scalerMultiply(a, 1.0/n);
 }
 
 double magnitude(vec3 a){
@@ -120,7 +123,7 @@ double tripleProduct(vec3 a, vec3 b, vec3 c){
     return dotProduct(a, crossProduct(b, c));
 }
 
-int rayTriangleIntersection(const Triangle triangle, ray r, double *t){
+int rayTriangleIntersection(const Triangle triangle, ray r, hitRecord *h){
     vec3 edge1 = subtract(triangle.v2, triangle.v1);
     vec3 edge2 = subtract(triangle.v3, triangle.v1);
 
@@ -149,47 +152,130 @@ int rayTriangleIntersection(const Triangle triangle, ray r, double *t){
         return -1;
 
     det1 = tripleProduct(O, edge1, edge2); // use cramers rule to solve for t
-    *t = det1 / det; 
+    
+    h->t = det1 / det; 
+    h->hPoint = calcRayPos(r, h->t);
+    h->normal = crossProduct(edge1, edge2);
 
     return 0;
 }
 
 
-bool isIntersectingCircle(const Circle circle, const ray r){
+int isIntersectingCircle(const Circle circle, const ray r, hitRecord* h){
     vec3 OC = subtract(r.origin, circle.centre);
 
     double a = pow(magnitude(r.direction), 2);
-    double b = -2 * (dotProduct(r.direction, OC));
+    double b = 2 * (dotProduct(r.direction, OC));
     double c = dotProduct(OC, OC) - pow(circle.radius, 2);
 
-    return ((b*b) - (4 * a * c));  
+    double disc = (b*b) - (4*a*c);
+
+    if(disc < 0 || c < 0)
+        return -1;
+        
+    double t1 = (-b - sqrt(disc)) / (2 * a);
+    double t2 = (-b + sqrt(disc)) / (2 * a);
+
+    if(fabs(t1) < fabs(t2))
+        h->t = t1;
+    
+    else
+        h->t = t2;
+        
+    h->hPoint = calcRayPos(r, h->t);
+    h->normal = calcUnitVector(subtract(h->hPoint, circle.centre));
+    
+    return 0;
+        
 }
 
-bool isIntersectingCircleCasted(const void* circleVoid, const ray r){
+bool isIntersectingCircleCasted(const void* circleVoid, const ray r, hitRecord* h){
     Circle *circle = (Circle*)circleVoid;
 
-    return isIntersectingCircle(*circle, r);
+    return isIntersectingCircle(*circle, r, h) == 0;
 }
 
 
-bool isIntersectingTriangleCasted(const void* triangleVoid, const ray r){
+bool isIntersectingTriangleCasted(const void* triangleVoid, const ray r, hitRecord* h){
     Triangle* triangle = (Triangle*)triangleVoid;
-    double t = 0;
     
-    return rayTriangleIntersection(*triangle, r,&t) == 0;
+    return rayTriangleIntersection(*triangle, r, h) == 0;
 }
 
-RGB calcRayColor(ray r, struct hittableObject world[WORLD_SIZE]){
-    RGB red = {255, 0, 0};
-    RGB blue = {0, 0, 245};
+int trace(ray r, hitRecord* h, const struct hittableObject world[], const unsigned int worldSize){
+    double minDistance = DBL_MAX;
+    hitRecord *minRecord = NULL;
+    
+    for(int i=0; i < worldSize; i++){
+        if(world[i].isHit(world[i].object, r, h)){
+            //double currDistance = h->t;
 
-    for (int i=0; i < WORLD_SIZE; i++){
-        if (world[i].isHit(world[i].object, r)) {
-            return red;
+            //if(minDistance > currDistance){
+               // minDistance = currDistance;
+                //minRecord = h;
+            //}
+            return 0;
         }
     }
+
+    if(minRecord == NULL)
+        return -1;
     
-    return blue;
+    return 0;
+}   
+
+
+vec3 randomVec(){
+    vec3 randVec; 
+
+    randVec.x = rand();
+    randVec.y = rand();
+    randVec.z = rand();
+
+    return calcUnitVector(randVec);
+}
+
+
+vec3 randomVecAtNormal(vec3 normal){
+   vec3 randVec = randomVec();
+    
+    if (dotProduct(normal, randVec) > 0)
+        return randVec;
+    else
+        return scalerMultiply(randVec, -1);
+
+}
+    
+RGB vecToRGB(vec3 a){
+    RGB result;
+
+    result.r = a.x;
+    result.g = a.y;
+    result.b = a.z;
+
+    return result;
+}
+RGB calcRayColor(ray r, const struct hittableObject world[], const unsigned int worldSize, int depth){
+    RGB black = {0, 0, 0};
+
+    if(depth <= 0)
+        return black;
+    
+    hitRecord h;
+
+    if(trace(r, &h, world, worldSize) == 0){
+        vec3 lightDir = randomVecAtNormal(h.normal);
+        ray lightRay = {h.hPoint, lightDir};
+        
+        return applyBrightness(calcRayColor(lightRay, world, worldSize, depth - 1), 0.75);
+    }
+    
+    double a = 0.5 * (r.direction.y + 1);
+
+    vec3 startColor = {0, 0, 0};
+    vec3 endColor = {100, 200, 255};
+
+    return vecToRGB(add(scalerMultiply(startColor, 1 - a), scalerMultiply(endColor, a)));
 }
 
 
@@ -203,36 +289,45 @@ int main(){
     int imageWidth = XSIZE;
     int imageHeight = (int)(imageWidth / aspectRatio);
 
-    double viewportWidth = 2.0;
-    double viewportHeight = viewportWidth / aspectRatio;
+    double viewportHeight = 2.0;
+    double viewportWidth = viewportHeight * aspectRatio;
+
+    //vev3 U = {viewportWidth, 0, 0};
+    //vec3 V = {0, viewportHeight, 0};
 
     double deltaU = viewportWidth / imageWidth;
     double deltaV = viewportHeight / imageHeight;
 
     int focalPoint = 1;
-
     vec3 cameraOrigin = {0, 0, 0};
+    
+    vec3 viewportMiddle = {0.5 * viewportWidth, 0.5 * viewportHeight, 0};
+    vec3 viewportBottomLeft = subtract(cameraOrigin, viewportMiddle);
+
+    vec3 halfDistance = {deltaU * 0.5, deltaV * 0.5, 0};
+    vec3 pixel0 = add(viewportBottomLeft, halfDistance);
     
     struct hittableObject world[WORLD_SIZE];
     
-    Triangle triangle = {
-        {0, 0, focalPoint}, 
-        {0.5, 0.5, focalPoint},
-         {1, 0, focalPoint}
-    };
+    Circle c = {{0, 0,focalPoint}, 0.5};
+    struct hittableObject hCircle = {&c, &isIntersectingCircleCasted};
+    
+    Circle groundCircle = {{0, -100.5, focalPoint}, 100};
+    struct hittableObject groundHCircle = {&groundCircle, &isIntersectingCircleCasted}; 
 
-    struct hittableObject triangleHittable = {&triangle, &isIntersectingTriangleCasted};
-    world[0] = triangleHittable;
+    world[0] = hCircle;
+    world[1] = groundHCircle;
     
     RGB** buffer = initBuffer(imageWidth, imageHeight);
     for(int i=0; i < imageHeight; i++){
         for(int j=0; j < imageWidth; j++){
-            vec3 pixelCentre = {j * deltaU, i * deltaV, focalPoint};
+            vec3 pixelCentre = {j * deltaU,  i * deltaV, focalPoint};
+            pixelCentre = add(pixel0, pixelCentre);
+            
             vec3 rayDirection = calcUnitVector(pixelCentre);
-
             ray r = {cameraOrigin, rayDirection};
-            RGB color = calcRayColor(r, world);
-        
+
+            RGB color = calcRayColor(r, world, WORLD_SIZE, MAX_RECURSION_DEPTH);
             buffer[i][j] = color;
         }
     }
@@ -242,7 +337,7 @@ int main(){
 
     if (result == -1)
         return -1;
-    
+
     initPPMHeader(f, imageWidth, imageHeight);
     writeBufferToPPM(buffer, f, imageWidth, imageHeight);
 

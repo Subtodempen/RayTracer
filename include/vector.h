@@ -7,10 +7,13 @@
 #include <string.h>
 #include <math.h>
 #include <stdbool.h>
+#include <limits.h>
+
 
 #include "color.h"
 
-#define WORLD_SIZE 1
+#define WORLD_SIZE 2
+#define MAX_RECURSION_DEPTH 10
 
 typedef struct{
     double x, y, z;
@@ -30,20 +33,28 @@ typedef struct{
     double radius;
 }Circle;
 
+typedef struct{
+    double t; 
+    vec3 hPoint;
+    vec3 normal;
+}hitRecord;
+
 // abstractable object every function should type cast object into specified
 // turn into a linked list later
 struct hittableObject{
     void* object;
-    bool (*isHit)(const void* object, ray r);
+    bool (*isHit)(const void* object, ray r,  hitRecord* h);
 };
 
+
 vec3 calcRayPos(ray r, double t);
-RGB calcRayColor(ray r, struct hittableObject world[WORLD_SIZE]);
+RGB calcRayColor(ray r, const struct hittableObject world[], const unsigned int worldSize, int depth);
+int trace(ray r, hitRecord* h, const struct hittableObject world[], const unsigned int worldSize);
 
-bool isIntersectingCircle(const Circle circle, const ray r);
-bool isIntersectingTriangleCasted(const void* triangleVoid, const ray r);
+int isIntersectingCircle(const Circle circle, const ray r, hitRecord *h);
+bool isIntersectingTriangleCasted(const void* triangleVoid, const ray r, hitRecord *h);
 
-int rayTriangleIntersection(const Triangle triangle, ray r, double *t);
+int rayTriangleIntersection(const Triangle triangle, ray r, hitRecord *h);
 
 // vector functionailty
 static inline vec3 add(vec3, vec3);
@@ -58,4 +69,6 @@ static inline double dotProduct(vec3, vec3);
 static inline vec3 crossProduct(vec3, vec3);
 static inline double tripleProduct(vec3, vec3, vec3);
 
+static inline vec3 randomVec();
+static inline vec3 randomVecAtNormal(vec3 normal);
 #endif

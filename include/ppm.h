@@ -9,7 +9,7 @@
 
 #include "color.h"
 
-#define XSIZE 800
+#define XSIZE 1800
 
 // read and write to the ppm file and functionbailty
 //int readPPM(FILE* f);
