@@ -48,5 +48,12 @@ CMakeFiles/RayLib.dir/src/main.c.o: /home/demirel/RayTracer/src/main.c \
  /usr/include/bits/mathcalls-helper-functions.h \
  /usr/include/bits/mathcalls.h \
  /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/stdbool.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/limits.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/syslimits.h \
+ /usr/include/limits.h /usr/include/bits/posix1_lim.h \
+ /usr/include/bits/local_lim.h /usr/include/linux/limits.h \
+ /usr/include/bits/pthread_stack_min-dynamic.h \
+ /usr/include/bits/pthread_stack_min.h /usr/include/bits/posix2_lim.h \
  /home/demirel/RayTracer/src/../include/color.h \
- /home/demirel/RayTracer/src/../include/ppm.h
+ /home/demirel/RayTracer/src/../include/ppm.h \
+ /usr/lib/gcc/x86_64-pc-linux-gnu/15.2.1/include/float.h
