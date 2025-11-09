@@ -65,6 +65,16 @@ CMAKE_BINARY_DIR = /home/demirel/RayTracer/build
 #=============================================================================
 # Targets provided globally by CMake.
 
+# Special rule for the target test
+test:
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running tests..."
+	/usr/bin/ctest $(ARGS)
+.PHONY : test
+
+# Special rule for the target test
+test/fast: test
+.PHONY : test/fast
+
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running CMake cache editor..."
@@ -187,6 +197,71 @@ RayLib/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/RayLib.dir/build.make CMakeFiles/RayLib.dir/build
 .PHONY : RayLib/fast
 
+#=============================================================================
+# Target rules for targets named RayTest
+
+# Build rule for target.
+RayTest: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 RayTest
+.PHONY : RayTest
+
+# fast build rule for target.
+RayTest/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RayTest.dir/build.make CMakeFiles/RayTest.dir/build
+.PHONY : RayTest/fast
+
+#=============================================================================
+# Target rules for targets named gmock
+
+# Build rule for target.
+gmock: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gmock
+.PHONY : gmock
+
+# fast build rule for target.
+gmock/fast:
+	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googlemock/CMakeFiles/gmock.dir/build.make _deps/googletest-build/googlemock/CMakeFiles/gmock.dir/build
+.PHONY : gmock/fast
+
+#=============================================================================
+# Target rules for targets named gmock_main
+
+# Build rule for target.
+gmock_main: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gmock_main
+.PHONY : gmock_main
+
+# fast build rule for target.
+gmock_main/fast:
+	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/build.make _deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/build
+.PHONY : gmock_main/fast
+
+#=============================================================================
+# Target rules for targets named gtest
+
+# Build rule for target.
+gtest: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gtest
+.PHONY : gtest
+
+# fast build rule for target.
+gtest/fast:
+	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/gtest.dir/build.make _deps/googletest-build/googletest/CMakeFiles/gtest.dir/build
+.PHONY : gtest/fast
+
+#=============================================================================
+# Target rules for targets named gtest_main
+
+# Build rule for target.
+gtest_main: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gtest_main
+.PHONY : gtest_main
+
+# fast build rule for target.
+gtest_main/fast:
+	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/build.make _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/build
+.PHONY : gtest_main/fast
+
 src/main.o: src/main.c.o
 .PHONY : src/main.o
 
@@ -214,6 +289,30 @@ src/main.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/RayLib.dir/build.make CMakeFiles/RayLib.dir/src/main.c.s
 .PHONY : src/main.c.s
 
+tests/testRay.o: tests/testRay.cpp.o
+.PHONY : tests/testRay.o
+
+# target to build an object file
+tests/testRay.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RayTest.dir/build.make CMakeFiles/RayTest.dir/tests/testRay.cpp.o
+.PHONY : tests/testRay.cpp.o
+
+tests/testRay.i: tests/testRay.cpp.i
+.PHONY : tests/testRay.i
+
+# target to preprocess a source file
+tests/testRay.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RayTest.dir/build.make CMakeFiles/RayTest.dir/tests/testRay.cpp.i
+.PHONY : tests/testRay.cpp.i
+
+tests/testRay.s: tests/testRay.cpp.s
+.PHONY : tests/testRay.s
+
+# target to generate assembly for a file
+tests/testRay.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/RayTest.dir/build.make CMakeFiles/RayTest.dir/tests/testRay.cpp.s
+.PHONY : tests/testRay.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -226,11 +325,20 @@ help:
 	@echo "... install/strip"
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
+	@echo "... test"
 	@echo "... RayLib"
+	@echo "... RayTest"
 	@echo "... RayTracer"
+	@echo "... gmock"
+	@echo "... gmock_main"
+	@echo "... gtest"
+	@echo "... gtest_main"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... tests/testRay.o"
+	@echo "... tests/testRay.i"
+	@echo "... tests/testRay.s"
 .PHONY : help
 
 

@@ -1,1 +1,1 @@
-/usr/bin/cc -O3 -DNDEBUG -Wl,--dependency-file=CMakeFiles/RayTracer.dir/link.d CMakeFiles/RayTracer.dir/src/main.c.o -o RayTracer  -lm
+/usr/bin/cc -g -Wl,--dependency-file=CMakeFiles/RayTracer.dir/link.d CMakeFiles/RayTracer.dir/src/main.c.o -o RayTracer  -lm

@@ -6,5 +6,5 @@ C_DEFINES = -DRayLib_EXPORTS
 
 C_INCLUDES = 
 
-C_FLAGS = -O3 -DNDEBUG -std=gnu11 -fPIC
+C_FLAGS = -g -std=gnu11 -fPIC
 

@@ -37,9 +37,7 @@ CMakeFiles/RayLib.dir/src/main.c.o: /home/demirel/RayTracer/src/main.c \
   /usr/include/bits/stdint-intn.h \
   /usr/include/bits/stdint-least.h \
   /usr/include/bits/stdint-uintn.h \
-  /usr/include/bits/stdio.h \
   /usr/include/bits/stdio_lim.h \
-  /usr/include/bits/stdlib-bsearch.h \
   /usr/include/bits/stdlib-float.h \
   /usr/include/bits/struct_mutex.h \
   /usr/include/bits/struct_rwlock.h \
@@ -110,6 +108,8 @@ libRayLib.so: /usr/lib/crti.o \
   /usr/lib/libc_nonshared.a \
   CMakeFiles/RayLib.dir/src/main.c.o
 
+
+CMakeFiles/RayLib.dir/src/main.c.o:
 
 /usr/lib/libc.so.6:
 
@@ -223,10 +223,6 @@ libRayLib.so: /usr/lib/crti.o \
 
 /usr/include/bits/byteswap.h:
 
-/usr/include/bits/types/struct_timespec.h:
-
-/home/demirel/RayTracer/include/vector.h:
-
 /usr/include/string.h:
 
 /usr/include/bits/time64.h:
@@ -271,16 +267,6 @@ libRayLib.so: /usr/lib/crti.o \
 
 /usr/include/bits/stdint-intn.h:
 
-/usr/include/bits/stdio.h:
-
-/usr/include/bits/types/struct_timeval.h:
-
-/usr/include/bits/stdio_lim.h:
-
-CMakeFiles/RayLib.dir/src/main.c.o:
-
-/usr/include/bits/stdlib-bsearch.h:
-
 /usr/include/bits/types/sigset_t.h:
 
 /usr/include/bits/struct_mutex.h:
@@ -324,3 +310,11 @@ CMakeFiles/RayLib.dir/src/main.c.o:
 /usr/include/bits/types/locale_t.h:
 
 /usr/include/bits/types/struct_FILE.h:
+
+/home/demirel/RayTracer/include/vector.h:
+
+/usr/include/bits/types/struct_timespec.h:
+
+/usr/include/bits/stdio_lim.h:
+
+/usr/include/bits/types/struct_timeval.h:

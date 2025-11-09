@@ -1,1 +1,1 @@
-/usr/bin/cc -fPIC -O3 -DNDEBUG -Wl,--dependency-file=CMakeFiles/RayLib.dir/link.d -shared -Wl,-soname,libRayLib.so -o libRayLib.so CMakeFiles/RayLib.dir/src/main.c.o
+/usr/bin/cc -fPIC -g -Wl,--dependency-file=CMakeFiles/RayLib.dir/link.d -shared -Wl,-soname,libRayLib.so -o libRayLib.so CMakeFiles/RayLib.dir/src/main.c.o
