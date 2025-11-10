@@ -1,1 +1,0 @@
-/usr/bin/c++ -O3 -DNDEBUG -Wl,--dependency-file=CMakeFiles/CircleIntersection.dir/link.d CMakeFiles/CircleIntersection.dir/tests/testRay.cpp.o CMakeFiles/CircleIntersection.dir/src/main.c.o -o CircleIntersection  lib/libgtest_main.a lib/libgtest.a

@@ -1,3 +1,0 @@
-rayTest.CircleIntersection 0 0
----
-rayTest.CircleIntersection

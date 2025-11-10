@@ -1,3 +1,0 @@
-/home/demirel/RayTracer/build/_deps/googletest-subbuild/CMakeFiles/googletest-populate.dir
-/home/demirel/RayTracer/build/_deps/googletest-subbuild/CMakeFiles/edit_cache.dir
-/home/demirel/RayTracer/build/_deps/googletest-subbuild/CMakeFiles/rebuild_cache.dir
