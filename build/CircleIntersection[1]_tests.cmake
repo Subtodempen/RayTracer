@@ -1,0 +1,1 @@
+set(  CircleIntersection_TESTS)

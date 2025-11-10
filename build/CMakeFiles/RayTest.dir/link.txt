@@ -1,0 +1,1 @@
+/usr/bin/c++ -g -Wl,--dependency-file=CMakeFiles/RayTest.dir/link.d CMakeFiles/RayTest.dir/tests/testRay.cpp.o -o RayTest  -Wl,-rpath,/home/demirel/RayTracer/build lib/libgtest_main.a libRayLib.so lib/libgtest.a

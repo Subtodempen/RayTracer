@@ -278,47 +278,24 @@ RGB calcRayColor(ray r, const struct hittableObject world[], const unsigned int 
     return vecToRGB(add(scalerMultiply(startColor, 1 - a), scalerMultiply(endColor, a)));
 }
 
+void render(RGB** buffer, 
+    struct hittableObject world[],
+    vec3 cameraOrigin, 
+    int imageWidth, 
+    int imageHeight,
+    double viewportWidth, 
+    double viewportHeight,
+    int focalPoint){
 
-void printVec(vec3 a){
-    printf(" %f %f %f", a.x, a.y, a.z);
-}
-
-int main(){
-    double aspectRatio = 16.0 / 9.0;
-    
-    int imageWidth = XSIZE;
-    int imageHeight = (int)(imageWidth / aspectRatio);
-
-    double viewportHeight = 2.0;
-    double viewportWidth = viewportHeight * aspectRatio;
-
-    //vev3 U = {viewportWidth, 0, 0};
-    //vec3 V = {0, viewportHeight, 0};
+    vec3 viewportMiddle = {0.5 * viewportWidth, 0.5 * viewportHeight, 0};
+    vec3 viewportBottomLeft = subtract(cameraOrigin, viewportMiddle);
 
     double deltaU = viewportWidth / imageWidth;
     double deltaV = viewportHeight / imageHeight;
 
-    int focalPoint = 1;
-    vec3 cameraOrigin = {0, 0, 0};
-    
-    vec3 viewportMiddle = {0.5 * viewportWidth, 0.5 * viewportHeight, 0};
-    vec3 viewportBottomLeft = subtract(cameraOrigin, viewportMiddle);
-
     vec3 halfDistance = {deltaU * 0.5, deltaV * 0.5, 0};
     vec3 pixel0 = add(viewportBottomLeft, halfDistance);
     
-    struct hittableObject world[WORLD_SIZE];
-    
-    Circle c = {{0, 0,focalPoint}, 0.5};
-    struct hittableObject hCircle = {&c, &isIntersectingCircleCasted};
-    
-    Circle groundCircle = {{0, -100.5, focalPoint}, 100};
-    struct hittableObject groundHCircle = {&groundCircle, &isIntersectingCircleCasted}; 
-
-    world[0] = hCircle;
-    world[1] = groundHCircle;
-    
-    RGB** buffer = initBuffer(imageWidth, imageHeight);
     for(int i=0; i < imageHeight; i++){
         for(int j=0; j < imageWidth; j++){
             vec3 pixelCentre = {j * deltaU,  i * deltaV, focalPoint};
@@ -331,6 +308,46 @@ int main(){
             buffer[i][j] = color;
         }
     }
+}
+
+
+void printVec(vec3 a){
+    printf(" %f %f %f", a.x, a.y, a.z);
+}
+
+int main(){
+    double aspectRatio = 16.0 / 9.0;
+    
+    int imageWidth = XSIZE;
+    int imageHeight = (int)(imageWidth / aspectRatio);
+    
+    double viewportHeight = 2.0;
+    double viewportWidth = viewportHeight * aspectRatio;
+    
+    int focalPoint = 1;
+    struct hittableObject world[WORLD_SIZE];
+    vec3 cameraOrigin = {0, 0,0};
+    
+    Circle c = {{0, 0,focalPoint}, 0.5};
+    struct hittableObject hCircle = {&c, &isIntersectingCircleCasted};
+    
+    Circle groundCircle = {{0, -100.5, focalPoint}, 100};
+    struct hittableObject groundHCircle = {&groundCircle, &isIntersectingCircleCasted}; 
+
+    world[0] = hCircle;
+    world[1] = groundHCircle;
+    
+    RGB** buffer = initBuffer(imageWidth, imageHeight);
+    
+    render(
+        buffer, 
+        world, 
+        cameraOrigin, 
+        imageWidth, 
+        imageHeight, 
+        viewportWidth, 
+        viewportHeight, 
+        focalPoint);
 
     FILE* f = NULL; 
     int result = openPPMFile(&f, "test.ppm");

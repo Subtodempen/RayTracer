@@ -1,0 +1,5 @@
+if(EXISTS "/home/demirel/RayTracer/build/CircleIntersection[1]_tests.cmake")
+  include("/home/demirel/RayTracer/build/CircleIntersection[1]_tests.cmake")
+else()
+  add_test(CircleIntersection_NOT_BUILT CircleIntersection_NOT_BUILT)
+endif()

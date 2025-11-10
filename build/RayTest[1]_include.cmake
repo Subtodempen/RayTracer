@@ -1,0 +1,5 @@
+if(EXISTS "/home/demirel/RayTracer/build/RayTest[1]_tests.cmake")
+  include("/home/demirel/RayTracer/build/RayTest[1]_tests.cmake")
+else()
+  add_test(RayTest_NOT_BUILT RayTest_NOT_BUILT)
+endif()
